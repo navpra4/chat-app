@@ -5,10 +5,11 @@ import {auth, storage, db} from "../firebase"
 import { useState } from 'react'
 import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore"; 
+import { Link, useNavigate } from 'react-router-dom'
 
 const Register = () => {
   const [error, setError] = useState(false)
-  //const db = getFirestore(app)
+  const navigate = useNavigate()
   const handleSubmit = async (e)=>{
     e.preventDefault()
     const displayName = e.target[0].value;
@@ -33,6 +34,10 @@ const Register = () => {
         email,
         photoURL: downloadURL,
       });
+
+      await setDoc(doc(db, "userChats",res.user.uid),{});
+      navigate("/");
+      
     }catch(err){
       setError(true);
       console.log(err);
@@ -56,7 +61,7 @@ const Register = () => {
                 <button>Sign Up</button>
                 {error && <span>Something went wrong</span>}
             </form>
-            <p>Do you have an account? Login</p>
+            <p>Do you have an account? <Link to="/login">Login</Link></p>
         </div>
     </div>
   )
